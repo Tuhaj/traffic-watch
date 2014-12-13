@@ -1,3 +1,46 @@
-html, body {
-  margin: 20px;
+.chart-container {
+  margin-top: 100px;
+  margin-left: 100px;
+  background-color: white;
+  padding: 50px;
+  height: 620px;
+  width: 620px;
+  z-index: 10;
+  box-shadow: 10px 10px 5px #888888;
+}
+
+.day-buttons {
+  text-align: center;
+}
+
+.map-canvas {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  height:100vh;
+  width: 100%;
+}
+
+.zoom {
+  zoom: 50%;
+}
+
+.hour-slider {
+  margin-top: -40px;
+  zoom: 200%;
+}
+
+.help-block {
+  text-align: center;
+}
+
+.city-selection {
+  position: absolute;
+  background: white;
+  left: 200px;
+  bottom: 570px;
+  border: 0px;
+  width: 30%;
+  font-size: 30px;
 }

@@ -2,7 +2,11 @@
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 
-var app = new EmberApp();
+var app = new EmberApp({
+  'fingerprint': {
+    prepend: "https://s3.amazonaws.com/traffic-watch-frontend/dist/"
+  }
+});
 
 // Use `app.import` to add additional libraries to the generated
 // output files.
@@ -16,5 +20,19 @@ var app = new EmberApp();
 // modules that you would like to import into your application
 // please specify an object with the list of modules as keys
 // along with the exports of each module as its value.
+app.import('bower_components/d3/d3.js');
+app.import('bower_components/lodash/lodash.js');
+app.import('bower_components/ember-charts/dist/ember-charts.js');
+app.import('bower_components/ember-charts/dist/ember-charts.css');
+
+app.import('bower_components/bootstrap/dist/css/bootstrap.css');
+app.import('bower_components/bootstrap/dist/css/bootstrap.css.map', { destDir: 'assets' });
+app.import('bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.eot', { destDir: 'fonts' });
+app.import('bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf', { destDir: 'fonts' });
+app.import('bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.svg', { destDir: 'fonts' });
+app.import('bower_components/bootstrap/dist/fonts/glyphicons-halflings-regular.woff', { destDir: 'fonts' });
+
+app.import('bower_components/bootstrap/dist/js/bootstrap.js');
+
 
 module.exports = app.toTree();

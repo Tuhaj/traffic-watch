@@ -1,0 +1,21 @@
+{{ city-map
+            lat=lat
+            lng=lng
+            markers=markers
+            roads=roads
+            displayedTime=displayedTime
+            currentCity=currentCity
+            zoom=zoom
+}}
+
+<div class='col-md-6'>
+  {{ traffic-chart weekContent=weekContent
+                   names=names
+                   cities=cities
+                   currentCity=currentCity
+                   displayedTime=displayedTime
+                   changeCity='changeCity'
+                   setDay='setDay'
+                   setHour='setHour'
+  }}
+</div>

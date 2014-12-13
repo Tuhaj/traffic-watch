@@ -1,0 +1,24 @@
+{{ time-series-chart
+  barData=timeSeriesBarContent
+  lineData=weekContent
+  selectedInterval='D'
+  horizontalMargin=0
+  labelWidth=0
+}}
+
+<div class="hour-slider">
+    {{ input-range value=hour setHour='setHour'}}
+  <span class="help-block">{{displayedHour}}</span>
+</div>
+
+<div class='day-buttons'>
+  <div class='btn btn-default' {{action "setDay" "Mon" on="click"}} > Mon </div>
+  <div class='btn btn-default' {{action "setDay" "Tue" on="click"}} > Tue </div>
+  <div class='btn btn-default' {{action "setDay" "Wed" on="click"}} > Wed </div>
+  <div class='btn btn-default' {{action "setDay" "Thu" on="click"}} > Thu </div>
+  <div class='btn btn-default' {{action "setDay" "Fri" on="click"}} > Fri </div>
+  <div class='btn btn-default' {{action "setDay" "Sat" on="click"}} > Sat </div>
+  <div class='btn btn-default' {{action "setDay" "Sun" on="click"}} > Sun </div>
+</div>
+
+{{view "select" class='city-selection' content=polishNames value=currentCityName}}

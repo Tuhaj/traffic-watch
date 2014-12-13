@@ -6,6 +6,11 @@ var Router = Ember.Router.extend({
 });
 
 Router.map(function() {
+  this.resource('dashboard', { path: '/' }, function () {
+    this.resource('cities', { path: '/'}, function () {
+      this.route('city', { path: '/:name'});
+    });
+  });
 });
 
 export default Router;
