@@ -3,7 +3,7 @@ import {MAP_TYPES} from '../components/google-map';
 
 export default Ember.Component.extend({
 
-  classNames: ["city-map"],
+  classNames: ['city-map'],
 
   type:        'road',
   mapTypes:    MAP_TYPES,
