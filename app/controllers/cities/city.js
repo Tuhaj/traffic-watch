@@ -36,10 +36,8 @@ export default Ember.ObjectController.extend({
 
   getLoad: function () {
     var date = this.getDate();
-    var promises = []
-    this.get('polylines').forEach(function (polyline) {
-      var polyline = polyline;
-      promises.addObject(request({
+    var promises = this.get('polylines').map(function (polyline) {
+      return request({
         url: '/markers/%@/sample'.fmt(polyline.get('marker.id')),
         type: 'GET',
         data: {
@@ -48,9 +46,7 @@ export default Ember.ObjectController.extend({
       }).then(function (response) {
         polyline.get('marker').set('current_load', response['load']);
         polyline.notifyPropertyChange('current_load');
-      }).catch(function (error) {
-        console.log(error);
-      }));
+      }).catch(function () {})
     })
     new Ember.RSVP.all(promises).then(function() {
       this.set('renderMap', this.get('xPosition'));
