@@ -56,20 +56,23 @@ export default Ember.ObjectController.extend({
     }.bind(this));
   },
 
+  midnightWeekAgo: function () {
+    var now = new Date(),
+        sevenDaysAgo = now.getDate() - 7,
+        hours = now.getHours() * 60 * 60 * 1000,
+        minutes = now.getMinutes() * 60 * 1000;
+    return new Date(now.setDate(sevenDaysAgo) - hours - minutes);
+  },
+
   getDate: function () {
     var wantedTime = this.get('filteredWeekStats.firstObject.created_at');
     if(Ember.isBlank(wantedTime)) {
-      wantedTime = new Date();
-      var sevenDaysAgo = wantedTime.getDate() - 7;
-      wantedTime = new Date(wantedTime.setDate(sevenDaysAgo));
-      wantedTime = new Date(wantedTime.setHours(0));
-      wantedTime = new Date(wantedTime.setMinutes(0));
+      wantedTime = this.midnightWeekAgo();
     }
-    var midnightDate = new Date(wantedTime);
-    var hour = this.get('xPosition');
-    var dateInNumber = midnightDate.setHours(hour);
-    var date = new Date(dateInNumber);
-    return date;
+    var midnightDate = new Date(wantedTime),
+        hour = this.get('xPosition'),
+        dateInNumber = midnightDate.setHours(hour);
+    return new Date(dateInNumber);
   },
 
   setPolylinesTraffic: function () {
