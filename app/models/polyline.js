@@ -5,9 +5,7 @@ export default DS.Model.extend({
   marker:    DS.belongsTo('marker'),
   points:    DS.hasMany('point'),
 
-  current_load: Ember.computed('marker', function () {
-    return this.get('marker.current_load');
-  }),
+  current_load: Ember.computed.alias('marker.current_load'),
 
   strokeColor: Ember.computed('current_load', function () {
     var percentage = this.get('current_load')
