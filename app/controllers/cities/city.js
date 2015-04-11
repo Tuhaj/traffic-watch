@@ -6,6 +6,7 @@ export default Ember.ObjectController.extend({
   needs: ['cities'],
 
   names: Ember.computed.alias('controllers.cities.names'),
+  cities: Ember.computed.alias('controllers.cities'),
   currentCity: 'Warsaw',
 
 // traffic-chart

@@ -3,39 +3,20 @@ import d3 from '../utils/d3';
 
 export default Ember.Component.extend({
 
-  nameTranslation: {
-    'Warsaw': 'Warszawa',
-    'Wroclaw': 'Wrocław',
-    'Krakow': 'Kraków',
-    'Poznan': 'Poznań',
-    'Bydgoszcz': 'Bydgoszcz',
-    'Bialystok': 'Białystok',
-    'Gorzow Wielkopolski': 'Gorzów Wielkopolski',
-    'Kielce': 'Kielce',
-    'Lublin': 'Lublin',
-    'Lodz': 'Łódź',
-    'Olsztyn': 'Olsztyn',
-    'Opole': 'Opole',
-    'Rzeszow': 'Rzeszów',
-    'Szczecin': 'Szczecin',
-    'Torun': 'Toruń',
-    'Gdansk': 'Gdańsk',
-    'Katowice': 'Katowice'
-  },
-
-  currentCityValue: {'Warszawa':'Warsaw','Wrocław':'Wroclaw','Kraków':'Krakow','Poznań':'Poznan','Bydgoszcz':'Bydgoszcz','Białystok':'Bialystok','Gorzów Wielkopolski':'Gorzow Wielkopolski','Kielce':'Kielce','Lublin':'Lublin','Łódź':'Lodz','Olsztyn':'Olsztyn','Opole':'Opole','Rzeszów':'Rzeszow','Szczecin':'Szczecin','Toruń':'Torun','Gdańsk':'Gdansk','Katowice':'Katowice'},
-
-  polishNames: Ember.computed.map('names', function (name) {
-    return this.get('nameTranslation')[name];
+  polishNames: Ember.computed.map('cities', function (city) {
+    return city.get('polishName');
   }),
 
   currentCityName: function () {
-    return this.get('nameTranslation')[this.get('currentCity')];
+    return this.get('currentCity.polishName');
   }.property('currentCity'),
 
   reloader: function () {
-    var city = this.get('currentCityValue')[this.get('currentCityName')];
-    this.sendAction('changeCity', city);
+    var city = this.get('cities').findBy('polishName', this.get('currentCityName'));
+    if(Ember.isBlank(this.get('currentCityName'))) {
+      city = this.get('cities').findBy('polishName', 'Warszawa');
+    }
+    this.sendAction('changeCity', city.get('name'));
   }.observes('currentCityName').on('init'),
 
   classNames: ['chart-container', 'zoom'],
