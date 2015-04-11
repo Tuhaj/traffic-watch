@@ -32,6 +32,8 @@ export default Ember.ObjectController.extend({
   xPosition: d3.time.format("%H")(new Date()),
 
 // city-map
+  polylines:  Ember.computed.mapBy('markers', 'polylines.firstObject'),
+
   renderMap: null,
 
   getLoad: function () {
@@ -44,7 +46,7 @@ export default Ember.ObjectController.extend({
           date: date
         }
       }).then(function (response) {
-        polyline.get('marker').set('current_load', response['load']);
+        polyline.set('marker.current_load', response['load']);
         polyline.notifyPropertyChange('current_load');
       }).catch(function () {})
     })

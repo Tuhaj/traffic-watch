@@ -8,8 +8,6 @@ export default DS.Model.extend({
   markers:    DS.hasMany('marker'),
   stats:      DS.hasMany('stat', {async: true}),
 
-  polylines:  Ember.computed.mapBy('markers', 'polylines.firstObject'),
-
   lat: function () {
     return this.get('center').split(',')[0];
   }.property('center'),
