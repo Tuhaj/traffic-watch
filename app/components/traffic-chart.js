@@ -21,8 +21,6 @@ export default Ember.Component.extend({
 
   classNames: ['chart-container', 'zoom'],
 
-  timeSeriesBarContent: [],
-
   hour: d3.time.format('%H')(new Date()),
 
   setHour: function() {
