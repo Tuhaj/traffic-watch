@@ -27,9 +27,6 @@ module.exports = function(environment) {
     }
   };
 
-  ENV.googleMap = {
-    key: 'AIzaSyCgjEq8IOYmdK0hOKmBjVyPY9QY2aJErP4'
-  };
 
 
   if (environment === 'development') {
