@@ -9,13 +9,15 @@ export default Ember.Component.extend({
   max: 24,
   step: 1,
 
-  change: function() {
+  input: function () {
     var value = this.get('element.value');
     this.set('value', +value);
+    this.send('setHour');
   },
 
-  input: function() {
-    var value = this.get('element.value');
-    this.set('hour', +value);
+  actions: {
+    setHour: function () {
+     this.sendAction('setHour', this.get('value'))
+    }
   }
 });

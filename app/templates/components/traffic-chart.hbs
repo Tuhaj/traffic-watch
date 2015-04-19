@@ -7,8 +7,8 @@
 }}
 
 <div class="hour-slider">
-    {{ input-range value=xPosition hour=hour}}
-  <span class="help-block">{{setHour}}</span>
+    {{ input-range value=hour setHour='setHour'}}
+  <span class="help-block">{{displayedHour}}</span>
 </div>
 
 <div class='day-buttons'>

@@ -14,7 +14,6 @@ export default Ember.Route.extend({
       type: 'GET',
       dataType: 'json'
     }).then(function (response) {
-      this.controller.getLoad();
       this.controller.set('weekStats', response.stats);
     }.bind(this)).catch(function () {
     });

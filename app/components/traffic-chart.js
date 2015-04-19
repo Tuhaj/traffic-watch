@@ -21,16 +21,23 @@ export default Ember.Component.extend({
 
   classNames: ['chart-container', 'zoom'],
 
-  hour: d3.time.format('%H')(new Date()),
+  hour: function () {
+    return d3.time.format('%H')(this.get('displayedTime'));
+  }.property('displayedTime'),
 
-  setHour: function() {
+
+  displayedHour: function() {
     return this.get('hour') + ':00';
-  }.property('hour'),
+  }.property('hour', 'displayedTime'),
 
   actions: {
 
     setDay: function (day) {
       this.sendAction('setDay', day);
+    },
+
+    setHour: function (hour) {
+      this.sendAction('setHour', hour);
     }
 
   }

@@ -12,14 +12,15 @@ export default Ember.ObjectController.extend({
 // traffic-chart
   timeSeriesBarContent: [],
 
-  day: d3.time.format("%a")(new Date()),
+// we want to have always historical data
+  displayedTime: new Date(),
 
   filteredWeekStats: Ember.computed.filter('weekStats', function (stat) {
     var date = stat.created_at,
         parsedDate = d3.time.format.iso.parse(date),
         format = d3.time.format("%a");
 
-    return format(parsedDate) === this.get('day');
+    return format(parsedDate) === format(this.get('displayedTime'));
   }),
 
   weekContent: Ember.computed.map('filteredWeekStats', function (stat) {
@@ -30,56 +31,47 @@ export default Ember.ObjectController.extend({
   }),
 
 // input-range
-  xPosition: d3.time.format("%H")(new Date()),
 
 // city-map
   polylines:  Ember.computed.mapBy('markers', 'polylines.firstObject'),
 
-  renderMap: null,
+  roads: Ember.computed('polylines', function () {
+    return this.get('polylines');
+  }),
 
-  getLoad: function () {
-    var date = this.getDate();
-    var promises = this.get('polylines').map(function (polyline) {
-      return request({
-        url: '/markers/%@/sample'.fmt(polyline.get('marker.id')),
-        type: 'GET',
-        data: {
-          date: date
-        }
-      }).then(function (response) {
-        polyline.set('marker.current_load', response['load']);
-        polyline.notifyPropertyChange('current_load');
-      }).catch(function () {})
-    })
-    new Ember.RSVP.all(promises).then(function() {
-      this.set('renderMap', this.get('xPosition'));
-    }.bind(this));
+// concerning time setting
+
+  getDayFromName: function (wantedDay) {
+    var theDay = null;
+    var weekFormat = d3.time.format("%a")
+    var days = [
+                this.dayAgo(1),
+                this.dayAgo(2),
+                this.dayAgo(3),
+                this.dayAgo(4),
+                this.dayAgo(5),
+                this.dayAgo(6),
+                this.dayAgo(7)
+              ]
+    days.forEach(function (day){
+      if(weekFormat(day) == wantedDay) {
+         theDay = day;
+      }
+    });
+    return theDay;
   },
 
-  midnightWeekAgo: function () {
-    var now = new Date(),
-        sevenDaysAgo = now.getDate() - 7,
-        hours = now.getHours() * 60 * 60 * 1000,
-        minutes = now.getMinutes() * 60 * 1000;
-    return new Date(now.setDate(sevenDaysAgo) - hours - minutes);
+  dayAgo: function (day) {
+    var now = new Date();
+    var xDaysAgo = now.getDate() - day;
+    return new Date(now.setDate(xDaysAgo));
   },
 
-  getDate: function () {
-    var wantedTime = this.get('filteredWeekStats.firstObject.created_at');
-    if(Ember.isBlank(wantedTime)) {
-      wantedTime = this.midnightWeekAgo();
-    }
-    var midnightDate = new Date(wantedTime),
-        hour = this.get('xPosition'),
-        dateInNumber = midnightDate.setHours(hour);
-    return new Date(dateInNumber);
+  getMidnightOf: function (day) {
+    var hours = day.getHours() * 60 * 60 * 1000,
+        minutes = day.getMinutes() * 60 * 1000;
+    return new Date(day - hours - minutes);
   },
-
-  setPolylinesTraffic: function () {
-    this.getLoad()
-  }.observes('xPosition'),
-
-  weekStats: [],
 
   actions: {
 
@@ -88,9 +80,19 @@ export default Ember.ObjectController.extend({
     },
 
     setDay: function (day) {
-      this.set('day', day);
+      var dayToSet = this.getDayFromName(day)
+      this.set('displayedTime', dayToSet);
       this.notifyPropertyChange('weekStats');
-      this.notifyPropertyChange('xPosition');
+    },
+
+    setHour: function (hour) {
+      var time = this.get('displayedTime');
+      if(time.getDate() == (new Date).getDate()) {
+        time = this.dayAgo(7);
+      }
+      var midnight = this.getMidnightOf(time);
+      var wantedTime = new Date(midnight.setHours(hour));
+      this.set('displayedTime', wantedTime);
     }
   }
 });
