@@ -29,7 +29,8 @@ export default Ember.Component.extend({
         type: 'GET',
         data: {
           date: date
-        }
+        },
+        timeout: 3000
       }).then(function (response) {
         road.set('marker.current_load', response['load']);
         road.notifyPropertyChange('current_load');

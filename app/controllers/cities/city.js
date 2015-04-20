@@ -90,8 +90,13 @@ export default Ember.ObjectController.extend({
       if(time.getDate() == (new Date).getDate()) {
         time = this.dayAgo(7);
       }
-      var midnight = this.getMidnightOf(time);
-      var wantedTime = new Date(midnight.setHours(hour));
+      var wantedTime = this.getMidnightOf(time);
+      if(hour === 24) {
+        wantedTime.setHours(23);
+        wantedTime.setMinutes(55);
+      } else {
+        wantedTime.setHours(hour);
+      }
       this.set('displayedTime', wantedTime);
     }
   }
