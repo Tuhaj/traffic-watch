@@ -10,10 +10,9 @@ export default Ember.ObjectController.extend({
   currentCity: 'Warsaw',
 
 // traffic-chart
-  timeSeriesBarContent: [],
-
-// we want to have always historical data
   displayedTime: new Date(),
+
+  weekStats: [],
 
   filteredWeekStats: Ember.computed.filter('weekStats', function (stat) {
     var date = stat.created_at,
@@ -30,14 +29,8 @@ export default Ember.ObjectController.extend({
     };
   }),
 
-// input-range
-
 // city-map
-  polylines:  Ember.computed.mapBy('markers', 'polylines.firstObject'),
-
-  roads: Ember.computed('polylines', function () {
-    return this.get('polylines');
-  }),
+  roads:  Ember.computed.mapBy('markers', 'polylines.firstObject'),
 
 // concerning time setting
 
@@ -75,7 +68,19 @@ export default Ember.ObjectController.extend({
 
   actions: {
 
+    getStats: function (city) {
+      request({
+        url: '/cities/%@/stats'.fmt(city),
+        type: 'GET',
+        dataType: 'json'
+      }).then(function (response) {
+        this.set('weekStats', response.stats);
+      }.bind(this)).catch(function () {
+      });
+    },
+
     changeCity: function (city) {
+            this.send('getStats', city);
       return this.transitionToRoute('cities.city', city);
     },
 
