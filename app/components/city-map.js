@@ -13,18 +13,39 @@ export default Ember.Component.extend({
 
   cache: {},
 
-  roadsArray: function () {
-    return Ember.A(this.get('roads'));
-  }.property('roads'),
+  roadsArray: [],
 
   rerenderPolylines: function () {
     this.set('roadsArray', []);
     this.getLoad();
-  }.observes('displayedTime', 'currentCity'),
+  }.observes('displayedTime', 'currentCity').on('didInsertElement'),
+
+  getStrokeColor: function (load) {
+    if(load > 150) {
+      return '#FF0000';
+    } else if (load > 120) {
+      return '#FFFF00';
+    } else {
+      return '#00FF00';
+    }
+  },
+
+  setRoads: function () {
+    var roads = this.get('roads'),
+        getStrokeColor = this.getStrokeColor,
+        roadsArray = roads.map(function (road) {
+          var load = road.get('current_load');
+          return {
+            'strokeColor': getStrokeColor(load),
+            'path': road.get('path')
+          }
+        })
+    this.set('roadsArray', roadsArray);
+  },
 
   getLoad: function () {
     var date        = this.get('displayedTime'),
-        cityName     = this.get('currentCity'),
+        cityName    = this.get('currentCity'),
         cache       = this.get('cache'),
         cachedLoads = {},
         cacheId     = date + cityName;
@@ -46,7 +67,7 @@ export default Ember.Component.extend({
         }).catch(function () {})
       })
       new Ember.RSVP.all(promises).then(function() {
-        this.set('roadsArray', this.get('roads'));
+        this.setRoads();
         cache[cacheId] = cachedLoads;
         this.set('cache', cache);
       }.bind(this));
@@ -58,7 +79,7 @@ export default Ember.Component.extend({
       })
 
       new Ember.RSVP.all(promises).then(function() {
-        this.set('roadsArray', this.get('roads'));
+        this.setRoads();
       }.bind(this));
     }
   }
