@@ -42,8 +42,7 @@ export default Ember.Component.extend({
         }).then(function (response) {
           var load = response['load'];
           cachedLoads[road.id] = load;
-          road.set('marker.current_load', load);
-          road.notifyPropertyChange('current_load');
+          road.set('current_load', load);
         }).catch(function () {})
       })
       new Ember.RSVP.all(promises).then(function() {
@@ -55,8 +54,7 @@ export default Ember.Component.extend({
     } else {
       var promises = this.get('roads').map(function (road) {
         var load = cache[cacheId][road.id];
-        road.set('marker.current_load', load);
-        road.notifyPropertyChange('current_load');
+        road.set('current_load', load);
       })
 
       new Ember.RSVP.all(promises).then(function() {

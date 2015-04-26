@@ -2,10 +2,9 @@ import Ember from 'ember';
 import DS from 'ember-data';
 
 export default DS.Model.extend({
-  marker:    DS.belongsTo('marker'),
-  points:    DS.hasMany('point'),
-
-  current_load: Ember.computed.alias('marker.current_load'),
+  current_load: DS.attr('number'),
+  marker:       DS.belongsTo('marker'),
+  points:       DS.hasMany('point'),
 
   strokeColor: Ember.computed('current_load', function () {
     var percentage = this.get('current_load')
