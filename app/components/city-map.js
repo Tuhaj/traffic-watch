@@ -53,8 +53,16 @@ export default Ember.Component.extend({
     })
   },
 
+  timeStamp: function () {
+    var time = this.get('displayedTime'),
+        minutes = Math.floor(time.getMinutes() / 15) * 15;
+    time.setSeconds(0);
+    time.setMinutes(minutes);
+    return time;
+  },
+
   getLoad: function () {
-    var time         = this.get('displayedTime'),
+    var time         = this.timeStamp(),
         cityName     = this.get('currentCity'),
         cache        = this.get('cache'),
         cacheId      = time + cityName;
