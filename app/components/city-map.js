@@ -30,7 +30,7 @@ export default Ember.Component.extend({
     }
   },
 
-  setRoads: function () {
+  setRoadColors: function () {
     var roads = this.get('roads'),
         getStrokeColor = this.getStrokeColor,
         roadsArray = roads.map(function (road) {
@@ -43,45 +43,41 @@ export default Ember.Component.extend({
     this.set('roadsArray', roadsArray);
   },
 
+  setLoadForAllRoads: function (response) {
+    var roads = this.get('roads');
+
+    roads.forEach(function (road) {
+      var roadId = road.get('marker.id');
+      var load = response['load'][String(roadId)];
+      road.set('current_load', load);
+    })
+  },
+
   getLoad: function () {
-    var date        = this.get('displayedTime'),
-        cityName    = this.get('currentCity'),
-        cache       = this.get('cache'),
-        cachedLoads = {},
-        cacheId     = date + cityName;
+    var time         = this.get('displayedTime'),
+        cityName     = this.get('currentCity'),
+        cache        = this.get('cache'),
+        cacheId      = time + cityName;
 
     if(cache[cacheId] === undefined) {
-
-      var promises = this.get('roads').map(function (road) {
-
-        return request({
-          url: '/markers/%@/sample'.fmt(road.get('marker.id')),
+      var promise = request({
+          url: '/cities/%@/traffic'.fmt(cityName),
           data: {
-            date: date
+            time: time
           },
           timeout: 3000
         }).then(function (response) {
-          var load = response['load'];
-          cachedLoads[road.id] = load;
-          road.set('current_load', load);
-        }).catch(function () {})
-      })
-      new Ember.RSVP.all(promises).then(function() {
-        this.setRoads();
-        cache[cacheId] = cachedLoads;
-        this.set('cache', cache);
-      }.bind(this));
+          this.setLoadForAllRoads(response);
+          cache[cacheId] = response;
+        }.bind(this)).catch(function () {})
 
+      this.set('cache', cache);
     } else {
-      var promises = this.get('roads').map(function (road) {
-        var load = cache[cacheId][road.id];
-        road.set('current_load', load);
-      })
-
-      new Ember.RSVP.all(promises).then(function() {
-        this.setRoads();
-      }.bind(this));
+      var promise = this.setLoadForAllRoads(cache[cacheId])
     }
+    new Ember.RSVP.resolve(promise).then(function () {
+      this.setRoadColors();
+    }.bind(this));
   }
 
 });
