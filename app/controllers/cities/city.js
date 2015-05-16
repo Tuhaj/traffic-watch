@@ -80,7 +80,8 @@ export default Ember.ObjectController.extend({
     },
 
     changeCity: function (city) {
-            this.send('getStats', city);
+      this.send('getStats', city);
+      this.set('currentCity', city);
       return this.transitionToRoute('cities.city', city);
     },
 
