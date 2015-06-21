@@ -30,9 +30,8 @@ export default Ember.Component.extend({
     }
   },
 
-  setRoadColors: function () {
-    var roads = this.get('roads'),
-        getStrokeColor = this.getStrokeColor,
+  setRoadColors: function (roads) {
+    var getStrokeColor = this.getStrokeColor,
         roadsArray = roads.map(function (road) {
           var load = road.get('current_load');
           return {
@@ -45,12 +44,12 @@ export default Ember.Component.extend({
 
   setLoadForAllRoads: function (response) {
     var roads = this.get('roads');
-
     roads.forEach(function (road) {
       var roadId = road.get('marker.id');
       var load = response['load'][String(roadId)];
       road.set('current_load', load);
     })
+    return roads;
   },
 
   timeStamp: function () {
@@ -65,27 +64,27 @@ export default Ember.Component.extend({
     var time         = this.timeStamp(),
         cityName     = this.get('currentCity'),
         cache        = this.get('cache'),
-        cacheId      = time + cityName;
-
-    if(cache[cacheId] === undefined) {
-      var promise = request({
-          url: '/cities/%@/traffic'.fmt(cityName),
-          data: {
-            time: time
-          },
-          timeout: 3000
-        }).then(function (response) {
-          this.setLoadForAllRoads(response);
-          cache[cacheId] = response;
-        }.bind(this)).catch(function () {})
-
-      this.set('cache', cache);
+        cacheId      = time + cityName,
+        roads        = [];
+    if(cache[cacheId]) {
+      roads = cache[cacheId];
     } else {
-      var promise = this.setLoadForAllRoads(cache[cacheId])
+      var promise = request({
+        url: '/cities/%@/traffic'.fmt(cityName),
+        data: {
+          time: time
+        }
+      }).then(function (response) {
+        roads = this.setLoadForAllRoads(response);
+        cache[cacheId] = roads;
+      }.bind(this)).catch(function () {})
+      this.set('cache', cache);
     }
-    new Ember.RSVP.resolve(promise).then(function () {
-      this.setRoadColors();
-    }.bind(this));
+    if(promise)
+      promise.then(function () {
+        return this.setRoadColors(roads);
+      }.bind(this))
+    this.setRoadColors(roads);
   }
 
 });
