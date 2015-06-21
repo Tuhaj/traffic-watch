@@ -18,7 +18,7 @@ export default Ember.Component.extend({
   rerenderPolylines: function () {
     this.set('roadsArray', []);
     this.getLoad();
-  }.observes('displayedTime', 'currentCity'),
+  }.observes('displayedTime', 'currentCity').on('didInsertElement'),
 
   getStrokeColor: function (load) {
     if(load > 150) {
@@ -30,8 +30,9 @@ export default Ember.Component.extend({
     }
   },
 
-  setRoadColors: function (roads) {
-    var getStrokeColor = this.getStrokeColor,
+  setRoadColors: function () {
+    var roads = this.get('roads'),
+        getStrokeColor = this.getStrokeColor,
         roadsArray = roads.map(function (road) {
           var load = road.get('current_load');
           return {
@@ -49,7 +50,6 @@ export default Ember.Component.extend({
       var load = response['load'][String(roadId)];
       road.set('current_load', load);
     })
-    return roads;
   },
 
   timeStamp: function () {
@@ -64,27 +64,25 @@ export default Ember.Component.extend({
     var time         = this.timeStamp(),
         cityName     = this.get('currentCity'),
         cache        = this.get('cache'),
-        cacheId      = time + cityName,
-        roads        = [];
-    if(cache[cacheId]) {
-      roads = cache[cacheId];
+        cacheId      = time + cityName;
+
+    if(cache[cacheId]){
+      var promise = this.setLoadForAllRoads(cache[cacheId]);
     } else {
       var promise = request({
         url: '/cities/%@/traffic'.fmt(cityName),
         data: {
           time: time
-        }
+        },
       }).then(function (response) {
-        roads = this.setLoadForAllRoads(response);
-        cache[cacheId] = roads;
+        this.setLoadForAllRoads(response);
+        cache[cacheId] = response;
       }.bind(this)).catch(function () {})
       this.set('cache', cache);
     }
-    if(promise)
-      promise.then(function () {
-        return this.setRoadColors(roads);
-      }.bind(this))
-    this.setRoadColors(roads);
+    new Ember.RSVP.resolve(promise).then(function () {
+      this.setRoadColors();
+    }.bind(this));
   }
 
 });
