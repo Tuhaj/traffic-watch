@@ -11,7 +11,7 @@ export default Ember.Component.extend({
 
   input: function () {
     var value = this.get('element.value');
-    this.set('value', +value);
+    this.set('value', value);
     this.send('setHour');
   },
 

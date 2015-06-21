@@ -18,7 +18,7 @@ export default Ember.Component.extend({
   rerenderPolylines: function () {
     this.set('roadsArray', []);
     this.getLoad();
-  }.observes('displayedTime', 'currentCity').on('didInsertElement'),
+  }.observes('displayedTime', 'currentCity'),
 
   getStrokeColor: function (load) {
     if(load > 150) {
