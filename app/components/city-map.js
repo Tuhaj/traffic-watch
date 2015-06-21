@@ -18,7 +18,7 @@ export default Ember.Component.extend({
   rerenderPolylines: function () {
     this.set('roadsArray', []);
     this.getLoad();
-  }.observes('displayedTime', 'currentCity').on('didInsertElement'),
+  }.observes('displayedTime', 'roads').on('didInsertElement'),
 
   getStrokeColor: function (load) {
     if(load > 150) {
@@ -62,7 +62,7 @@ export default Ember.Component.extend({
 
   getLoad: function () {
     var time         = this.timeStamp(),
-        cityName     = this.get('currentCity'),
+        cityName     = this.get('currentCity.name'),
         cache        = this.get('cache'),
         cacheId      = time + cityName;
 

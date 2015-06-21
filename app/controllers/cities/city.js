@@ -7,7 +7,10 @@ export default Ember.ObjectController.extend({
 
   names: Ember.computed.alias('controllers.cities.names'),
   cities: Ember.computed.alias('controllers.cities'),
-  currentCity: 'Warsaw',
+
+  currentCity: Ember.computed.alias('model'),
+
+  currentCityName: Ember.computed.alias('currentCity.name'),
 
 // traffic-chart
   displayedTime: new Date(),
@@ -81,8 +84,9 @@ export default Ember.ObjectController.extend({
 
     changeCity: function (city) {
       this.send('getStats', city);
-      this.set('currentCity', city);
-      return this.transitionToRoute('cities.city', city);
+      var city = this.get('cities').findBy('name', city);
+      this.transitionToRoute('cities.city', city);
+      this.set('content', city);
     },
 
     setDay: function (day) {

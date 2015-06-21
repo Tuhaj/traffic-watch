@@ -14,30 +14,5 @@ export default DS.Model.extend({
 
   lng: function () {
     return this.get('center').split(',')[1];
-  }.property('center'),
-
-  polishName: function () {
-    return this.get('nameTranslation')[this.get('name')];
-  }.property('name'),
-
-  nameTranslation: {
-    'Warsaw': 'Warszawa',
-    'Wroclaw': 'Wrocław',
-    'Krakow': 'Kraków',
-    'Poznan': 'Poznań',
-    'Bydgoszcz': 'Bydgoszcz',
-    'Bialystok': 'Białystok',
-    'Gorzow Wielkopolski': 'Gorzów Wielkopolski',
-    'Kielce': 'Kielce',
-    'Lublin': 'Lublin',
-    'Lodz': 'Łódź',
-    'Olsztyn': 'Olsztyn',
-    'Opole': 'Opole',
-    'Rzeszow': 'Rzeszów',
-    'Szczecin': 'Szczecin',
-    'Torun': 'Toruń',
-    'Gdansk': 'Gdańsk',
-    'Katowice': 'Katowice'
-  },
-
+  }.property('center')
 });
