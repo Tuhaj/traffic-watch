@@ -32,7 +32,6 @@
     "express": "^4.8.5",
     "glob": "^4.0.5",
     "ember-google-map": "0.0.13",
-    "ember-cli-front-end-builds": "0.0.7",
-    "ember-cli-i18n": "0.0.2"
+    "ember-cli-front-end-builds": "0.0.7"
   }
 }

@@ -14,8 +14,7 @@ module.exports = function(environment) {
     },
 
     APP: {
-      defaultLocale: 'en',
-      defaultcity: 'Warsaw'
+      defaultcity: 'Warszawa'
     },
     contentSecurityPolicy: {
       'default-src': "'none'",
