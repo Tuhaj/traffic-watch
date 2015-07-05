@@ -86,7 +86,7 @@ export default Ember.ObjectController.extend({
       this.send('getStats', city);
       var city = this.get('cities').findBy('name', city);
       this.transitionToRoute('cities.city', city);
-      this.set('content', city);
+      this.set('model', city);
     },
 
     setDay: function (day) {
